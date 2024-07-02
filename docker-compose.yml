@@ -1,0 +1,59 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=ULRASSHOP_1
+    build:
+      dockerfile: Dockerfile
+      context: ./postgres
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '3050:80'
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: './server'
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - DB_NAME=ULRASSHOP_1
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - API_URL=http://5.35.94.55:3000/
+      - CLIENT_URL=http://5.35.94.55:5000/
+      - PORT=3000
+      - SECRET_KEY=usyrt348__UI
+      - ADMIN1_MAIL=aXXadmn42899@mail.ru
+      - ADMIN1_PASS=HIUfd89235yuhr
+      - ADMIN2_MAIL=askXXdmin9912@gmail.com
+      - ADMIN2_PASS=kow89274CCNJ
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
+    restart: always
+  client:
+    stdin_open: true
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    environment:
+      - REACT_APP_BASE_URL=http://5.35.94.55:3000/
+    ports:
+      - '5000:5000'
+
