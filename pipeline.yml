@@ -1,0 +1,27 @@
+name: NodeJS Lint
+
+on: [push]
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Скачиваем исходный код репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Можно указать нужную вам версию (например, 18, 22)
+          cache: 'npm'       # Включает кэширование зависимостей для ускорения сборки
+
+      # 3. Устанавливаем зависимости проекта
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Запускаем команду линтера
+      - name: Run linter
+        run: npm run lint
